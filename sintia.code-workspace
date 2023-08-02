@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"LaravelExtraIntellisense.modelsPaths": [
+		
+			"app",
+			"app/Models"
+		]
+	}
+}
