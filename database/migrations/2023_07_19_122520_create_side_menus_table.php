@@ -22,7 +22,8 @@ return new class extends Migration
             $table->enum('level',['admin','dokter','kasir','perawat','pasien'])->nullable();
             $table->boolean('active')->nullable();
             $table->string('icon')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });
     }
 

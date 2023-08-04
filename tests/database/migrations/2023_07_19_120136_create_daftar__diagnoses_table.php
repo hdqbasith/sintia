@@ -18,7 +18,8 @@ class CreateDaftarDiagnosesTable extends Migration
             $table->string('kode')->nullable();
             $table->string('diagnosis')->nullable();
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('created_by', 'daftar__diagnoses_created_by_foreign')->references('id')->on('auth__users')->onDelete('cascade');
         });

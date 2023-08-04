@@ -13,6 +13,9 @@ import CardBoxModalEmpty from "@/components/CardBoxModalEmpty.vue";
 import { split, toArray, toLower } from "lodash";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormAntrean from "../Form/FormAntrean.vue";
+import BaseLevel from "@/components/BaseLevel.vue";
+import BaseButtons from "@/components/BaseButtons.vue";
+import mapSort from "mapsort";
 
 const pasiens = usePage().props.pasiens;
 const filteredpasiens = ref(pasiens);
@@ -43,26 +46,77 @@ const sortPasien = (col) => {
   mapped.value = filteredpasiens.value.map((v, i) => {
     return { i, value: v[col] };
   });
-  mapped.value.sort((a, b) => {
-    if (asc.value.asc == true) {
-      if (a.value > b.value) {
-        return 1;
+  // mapped.value.sort((a, b) => {
+  //   if (asc.value.asc == true) {
+  //     if (a.value > b.value) {
+  //       return 1;
+  //     }
+  //     if (a.value < b.value) {
+  //       return -1;
+  //     }
+  //   } else {
+  //     if (a.value > b.value) {
+  //       return -1;
+  //     }
+  //     if (a.value < b.value) {
+  //       return 1;
+  //     }
+  //   }
+  //   return 0;
+  // });
+  mapped.value = mapSort(
+    mapped.value,
+    (p, i) => ({ value: p.value }),
+    (a, b) => {
+      if (col == 'nomor_rm') {
+        if (asc.value.asc == true) {
+          return a.value - b.value;
+        } else {
+          return b.value - a.value;
+        }
       }
-      if (a.value < b.value) {
-        return -1;
+      else if (asc.value.asc == true) {
+        if (a.value > b.value) {
+          return 1;
+        }
+        if (a.value < b.value) {
+          return -1;
+        }
+      } else {
+        if (a.value > b.value) {
+          return -1;
+        }
+        if (a.value < b.value) {
+          return 1;
+        }
       }
-    } else {
-      if (a.value > b.value) {
-        return -1;
-      }
-      if (a.value < b.value) {
-        return 1;
-      }
+      return 0;
     }
-    return 0;
-  });
+  )
   filteredpasiens.value = mapped.value.map((v) => filteredpasiens.value[v.i])
 }
+const currentPage = ref(0);
+const pasienPaginated = computed(() =>
+  filteredpasiens.value.slice(
+    25 * currentPage.value,
+    25 * (currentPage.value + 1)
+  )
+);
+const numPages = computed(() => Math.ceil(filteredpasiens.value.length / 25));
+const currentPageHuman = computed(() => currentPage.value + 1);
+const pagesList = computed(() => {
+  const pagesList = [];
+
+  for (let i = 0; i < numPages.value; i++) {
+    pagesList.push(i);
+  }
+
+  return pagesList;
+});
+
+
+
+
 const tabs = reactive({
   tabSemua: true,
   tabBPJS: false,
@@ -94,7 +148,10 @@ const thead = reactive({
   pekerjaan: 'Pekerjaan',
   alamat: 'Alamat',
   aksi: '',
-})
+});
+const edit = () => {
+  showFormPasien.value = true;
+}
 </script>
 
 <template>
@@ -125,7 +182,7 @@ const thead = reactive({
             </tr>
           </thead>
           <tbody>
-            <tr v-for="p in filteredpasiens">
+            <tr v-for="p in pasienPaginated">
               <td data-label="No. RM">{{ p.nomor_rm }}</td>
               <td data-label="Nama">{{ p.nama }}</td>
               <td data-label="TTL">{{ p.tempat_lahir ? p.tempat_lahir + ', ' : p.tempat_lahir }}{{ p.tanggal_lahir ?
@@ -136,20 +193,29 @@ const thead = reactive({
               <td data-label="Alamat">{{ p.alamat }}</td>
               <td class="text-center">
                 <div>
-                <BaseButton :icon="mdiPencil" color="" class="bg-yellow-500" title="Lihat/Edit"
-                  @click="{ pasien = p; showFormPasien = true }" icon-size="24"/>
-                <BaseButton :icon="mdiArrowRightBold" class="ml-1" color="info" title="Masukkan Antrean" @click="{ pasien = p;showFormAntrean=true}" icon-size="24"/>
-              </div>
+                  <BaseButton :icon="mdiArrowRightBold" class="ml-1" color="info" title="Masukkan Antrean"
+                    @click="{ pasien = p; showFormAntrean = true }" icon-size="24" />
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
+        <div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+          <BaseLevel>
+            <BaseButtons>
+              <BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1"
+                :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
+            </BaseButtons>
+            <small>Page {{ currentPageHuman }} of {{ numPages }}</small>
+          </BaseLevel>
+        </div>
       </CardBox>
       <CardBoxModalEmpty v-model="showFormPasien">
         <FormPasien :pasien="pasien" v-model="showFormPasien" />
       </CardBoxModalEmpty>
       <CardBoxModalEmpty v-model="showFormAntrean">
-        <FormAntrean :pasien="pasien" v-model="showFormAntrean" />
+        <FormAntrean :pasien="pasien" v-model="showFormAntrean" @edit="edit" />
       </CardBoxModalEmpty>
     </SectionMain>
-  </LayoutAuthenticated></template>
+  </LayoutAuthenticated>
+</template>

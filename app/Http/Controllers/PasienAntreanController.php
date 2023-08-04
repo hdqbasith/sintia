@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PasienAntrean;
 use App\Models\UserSetting;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,8 +22,10 @@ class PasienAntreanController extends Controller
         $mulai = $selesai = Carbon::now()->format('Y-m-d');
         if ($request->mulai) $mulai = $request->mulai;
         if ($request->selesai) $selesai = $request->selesai;
+        $antrean=PasienAntrean::whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->get();
+        // if(!$antrean) $antrean=new PasienAntrean();
         return Inertia::render('List/ListAntrean', [
-            'antreans' => PasienAntrean::whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->get(),
+            'antreans' => $antrean,
             'message' => session()->has('message') ? session()->get("message") : null
         ]);
     }
@@ -82,9 +85,16 @@ class PasienAntreanController extends Controller
      * @param  \App\Models\PasienAntrean  $pasienAntrean
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PasienAntrean $pasienAntrean)
+    public function panggil(Request $request)
     {
-        //
+        $data=$request->all();
+        PasienAntrean::whereKehadiran('P')->update(['kehadiran'=>'S']);
+        $mulai = Carbon::now()->format('Y-m-d');
+        $next=PasienAntrean::whereDate('booking_mulai', '=', $mulai)->whereKehadiran('D')->select(DB::raw("MIN(`nomor`) AS min, id"))->groupBy('id')->first();
+        
+        if($data['antrean']=='next') PasienAntrean::whereId($next['id'])->update(['kehadiran'=>$data['kehadiran']]);
+        else PasienAntrean::whereId($data['antrean'])->update(['kehadiran'=>$data['kehadiran']]);
+        return redirect(route('antrean.list'));
     }
 
     /**

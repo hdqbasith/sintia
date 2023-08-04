@@ -22,7 +22,8 @@ class CreateDaftarObatsTable extends Migration
             $table->unsignedInteger('hargajual')->nullable();
             $table->date('expired')->nullable();
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('created_by', 'daftar__obats_created_by_foreign')->references('id')->on('auth__users')->onDelete('cascade');
         });

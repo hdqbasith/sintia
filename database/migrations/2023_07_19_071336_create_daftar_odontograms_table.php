@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('arti')->nullable();
             $table->string('catatan')->nullable();
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
 
             $table->foreign('created_by')
                 ->nullable()

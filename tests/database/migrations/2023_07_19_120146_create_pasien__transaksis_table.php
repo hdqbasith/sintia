@@ -22,7 +22,8 @@ class CreatePasienTransaksisTable extends Migration
             $table->tinyInteger('kuantitas')->nullable();
             $table->unsignedInteger('harga')->nullable();
             $table->uuid('admin')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('admin', 'pasien__transaksis_admin_foreign')->references('id')->on('auth__users')->onDelete('cascade');
             $table->foreign('pasien', 'pasien__transaksis_pasien_foreign')->references('id')->on('daftar__pasiens')->onDelete('cascade');

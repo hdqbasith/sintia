@@ -100,6 +100,6 @@ const submit = () => {
     </FormSection>
   </CardBox>
   <CardBoxModal v-model="showIconModal" has-cancel>
-    <MdiIcon v-on:change-icon="changeIcon" v-on:close-modal="closeModal"></MdiIcon>
+    <!-- <MdiIcon v-on:change-icon="changeIcon" v-on:close-modal="closeModal"></MdiIcon> -->
   </CardBoxModal>
 </template>

@@ -14,65 +14,18 @@ import {
 
 export default [
   {
-    route: "dashboard",
+    route: "pasien.list",
     icon: mdiMonitor,
-    label: "Dashboard",
-  },
-  // {
-  //   route: "migrasi",
-  //   label: "Migrasi",
-  //   icon: mdiTable,
-  // },
-  {
-    route: "tables",
-    label: "Tables",
-    icon: mdiTable,
+    label: "Daftar Pasien",
   },
   {
-    route: "forms",
-    label: "Forms",
-    icon: mdiSquareEditOutline,
+    route: "antrean.list",
+    icon: mdiMonitor,
+    label: "Daftar Antrean",
   },
   {
-    route: "ui",
-    label: "UI",
-    icon: mdiTelevisionGuide,
-  },
-  {
-    route: "responsive",
-    label: "Responsive",
-    icon: mdiResponsive,
-  },
-  // {
-  //   route: "/",
-  //   label: "Styles",
-  //   icon: mdiPalette,
-  // },
-  {
-    route: "profile",
-    label: "Profile",
-    icon: mdiAccountCircle,
-  },
-  {
-    route: "login",
-    label: "Login",
-    icon: mdiLock,
-  },
-  {
-    route: "error",
-    label: "Error",
-    icon: mdiAlertCircle,
-  },
-  {
-    label: "Dropdown",
-    icon: mdiViewList,
-    menu: [
-      {
-        label: "Item One",
-      },
-      {
-        label: "Item Two",
-      },
-    ],
+    route: "pemeriksaan.list",
+    icon: mdiMonitor,
+    label: "Pemeriksaan Pasien",
   },
 ];

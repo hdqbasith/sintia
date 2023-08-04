@@ -23,7 +23,8 @@ class CreatePasienAntreansTable extends Migration
             $table->integer('klinik')->default(1);
             $table->boolean('online')->default(0);
             $table->uuid('admin')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('admin', 'pasien__antreans_admin_foreign')->references('id')->on('auth__users')->onDelete('cascade');
             $table->foreign('pasien', 'pasien__antreans_pasien_foreign')->references('id')->on('daftar__pasiens')->onDelete('cascade');

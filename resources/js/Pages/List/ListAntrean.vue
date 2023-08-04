@@ -3,7 +3,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import { Head, router, usePage } from "@inertiajs/vue3";
-import { mdiAccountHeart, mdiArrowRightBold, mdiBullhorn, mdiDeleteEmpty, mdiEye, mdiMenuDown, mdiMenuUp, mdiPlusThick, mdiSkipNext } from "@mdi/js";
+import { mdiAccountHeart, mdiArrowLeftBold, mdiArrowRightBold, mdiBullhorn, mdiDeleteEmpty, mdiEye, mdiMenuDown, mdiMenuUp, mdiPlusThick, mdiSkipNext, mdiStethoscope } from "@mdi/js";
 import CardBox from '@/components/CardBox.vue';
 import { reactive, ref, computed } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
@@ -21,8 +21,10 @@ const filterAntrean = (search) => {
     )
   )
 };
+const dipanggil = ref('');
 const filterMenunggu = () => {
   filteredAntreans.value = toArray(antreans).filter((col) => {
+    if (col.kehadiran == 'P') dipanggil.value = col;
     if (col.kehadiran == 'D') return true;
   })
 };
@@ -71,12 +73,6 @@ const tabAktif = (i) => {
   if (i == 'tabAntrean') filterMenunggu();
   else if (i == 'tabSemua') filterAntrean('');
 }
-const antrean = ref();
-const showFormantrean = ref(false);
-const newantrean = () => {
-  showFormantrean.value = true;
-  antrean.value = 'reset';
-};
 const searchInput = ref();
 const thead = reactive({
   nomor: 'No. Antrean',
@@ -91,14 +87,21 @@ const status = { D: 'menunggu', P: 'sudah dipanggil', T: 'ditunda', S: 'selesai'
 <template>
   <LayoutAuthenticated>
     <SectionMain>
+
       <Head title="Daftar Antrean" />
       <SectionTitleLineWithButton :icon="mdiAccountHeart" title="Daftar antrean">
-        <BaseButton :icon="mdiPlusThick" label="Antrean Baru" color="info" rounded-full small @click="router.visit('/pasien/list')" />
+        <BaseButton :icon="mdiPlusThick" label="Antrean Baru" color="info" rounded-full small
+          @click="router.visit('/pasien/list')" />
       </SectionTitleLineWithButton>
       <CardBox>
         <div class="mb-3">
-          Pasien yang sedang ditangani: <span class="font-bold me-4">{{ filteredAntreans[0]['daftar_pasien']['nama'] }} (no. {{ filteredAntreans[0]['nomor'] }})</span>
-          <BaseButton :icon="mdiSkipNext" label="Panggil berikutnya" color="info"/>
+          Pasien yang sedang ditangani: <span class="font-bold me-4">{{ dipanggil ?
+            dipanggil.daftar_pasien.nama : '' }} (no. {{
+    dipanggil ? dipanggil.nomor : '' }})</span>
+          <BaseButton :icon="mdiStethoscope" label="Periksa" color="info"
+            @click="router.visit(route('pemeriksaan.list'))" class="me-3" />
+          <BaseButton :icon="mdiSkipNext" label="Panggil berikutnya" color="warning"
+            @click="router.visit('/antrean/panggil?antrean=next&kehadiran=P')" />
         </div>
         <div class="mb-3">
           <BaseButton v-for="(t, i) in tabs" :label="i.toString().replace('tab', '')" :key="i" class="me-1 mb-3"
@@ -122,9 +125,11 @@ const status = { D: 'menunggu', P: 'sudah dipanggil', T: 'ditunda', S: 'selesai'
               <td data-label="Alamat">{{ p.daftar_pasien.alamat }}</td>
               <td data-label="Status">{{ status[p.kehadiran] }}</td>
               <td class="text-center">
+                <BaseButton :icon="mdiArrowLeftBold" color="" class="bg-red-300 text-black" title="Kembalikan ke antrean" icon-size="24"
+                  @click="router.visit('/antrean/panggil?antrean=' + p.id + '&kehadiran=D')" v-if="p.kehadiran!='D'"/>
                 <BaseButton :icon="mdiBullhorn" color="" class="bg-yellow-200 text-black" title="Panggil" icon-size="24"
-                  @click="{ antrean = p; showFormantrean = true }" />
-                <BaseButton :icon="mdiDeleteEmpty" class="ml-4" color="danger" title="Hapus" :icon-size="24"/>
+                  @click="router.visit('/antrean/panggil?antrean=' + p.id + '&kehadiran=P')" v-if="p.kehadiran=='D'"/>
+                <BaseButton :icon="mdiDeleteEmpty" class="ml-4" color="danger" title="Hapus" icon-size="24" @click="router.visit('/antrean/panggil?antrean=' + p.id + '&kehadiran=S')"/>
               </td>
             </tr>
           </tbody>

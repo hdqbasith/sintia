@@ -7,6 +7,7 @@ use App\Http\Controllers\DaftarPasienController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Migrasi;
 use App\Http\Controllers\PasienAntreanController;
+use App\Http\Controllers\PasienRecordController;
 use App\Http\Controllers\Student\BioStudent;
 use App\Http\Controllers\User\Setting;
 use App\Models\PasienAntrean;
@@ -89,8 +90,14 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::controller(PasienAntreanController::class)->group(function () {
         Route::get('/antrean/list', 'index')->name('antrean.list');
-        Route::post('/antrean/store', 'store')->name('antrean.store');
+        Route::get('/antrean/store', 'store')->name('antrean.store');
+        Route::get('/antrean/panggil', 'panggil')->name('antrean.panggil');
         Route::post('/antrean/destroy', 'destroy')->name('antrean.destroy');
+    });
+    Route::controller(PasienRecordController::class)->group(function () {
+        Route::get('/pemeriksaan/list', 'index')->name('pemeriksaan.list');
+        Route::post('/pemeriksaan/store', 'store')->name('pemeriksaan.store');
+        Route::post('/pemeriksaan/delete', 'delete')->name('pemeriksaan.delete');
     });
 });
 

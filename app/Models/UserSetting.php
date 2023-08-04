@@ -20,6 +20,8 @@ use Eloquent;
  * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereVal($value)
+ * @property string $content
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereContent($value)
  * @mixin Eloquent
  */
 class UserSetting extends Eloquent

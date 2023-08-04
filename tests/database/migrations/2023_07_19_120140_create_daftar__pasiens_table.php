@@ -28,7 +28,8 @@ class CreateDaftarPasiensTable extends Migration
             $table->uuid('akun')->nullable();
             $table->integer('klinik')->default(1);
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('created_by', 'daftar__pasiens_created_by_foreign')->references('id')->on('auth__users')->onDelete('cascade');
         });

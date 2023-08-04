@@ -21,7 +21,8 @@ class CreatePasienRecordsTable extends Migration
             $table->bigInteger('keterangan')->nullable();
             $table->integer('klinik')->default(1);
             $table->uuid('admin')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('admin', 'pasien__records_admin_foreign')->references('id')->on('auth__users')->onDelete('cascade');
             $table->foreign('pasien', 'pasien__records_pasien_foreign')->references('id')->on('daftar__pasiens')->onDelete('cascade');

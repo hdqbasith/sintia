@@ -18,10 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('pasien');
             $table->string('tabel')->default('anamnesa');
             $table->bigInteger('kode')->nullable();
-            $table->bigInteger('keterangan')->nullable();
+            $table->string('keterangan')->nullable();
             $table->integer('klinik')->default(1);
             $table->uuid('admin')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
 
             $table->foreign('pasien')
                 ->nullable()

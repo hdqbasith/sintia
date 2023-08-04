@@ -18,7 +18,8 @@ class CreateDaftarKeluhansTable extends Migration
             $table->char('kode', 255);
             $table->string('anamnesa');
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             
             $table->foreign('created_by', 'daftar__keluhans_created_by_foreign')->references('id')->on('auth__users')->onDelete('cascade');
         });

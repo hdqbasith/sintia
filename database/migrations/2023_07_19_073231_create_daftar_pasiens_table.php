@@ -29,7 +29,8 @@ return new class extends Migration
             $table->uuid('akun')->nullable();
             $table->integer('klinik')->default(1);
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
 
             $table->foreign('created_by')
                 ->nullable()

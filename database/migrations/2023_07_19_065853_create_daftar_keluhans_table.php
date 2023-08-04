@@ -18,7 +18,8 @@ return new class extends Migration
             $table->char('kode');
             $table->string('anamnesa');
             $table->uuid('created_by')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
 
             $table->foreign('created_by')
                 ->nullable()
