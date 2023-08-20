@@ -33,7 +33,7 @@ window.addEventListener("keydown", (e) => {
     <OverlayLayer v-show="value" @overlay-click="cancel">
     <div
       v-show="value"
-      class="shadow-lg max-h-screen w-11/12 md:w-4/5 lg:w-4/5 xl:w-9/12 z-50 overflow-y-scroll aside-scrollbars-gray"
+      class="shadow-lg max-h-screen z-50 overflow-y-auto aside-scrollbars-gray"
       is-modal
     >
         <slot />

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DaftarCheckup;
+use App\Models\DaftarOdontogram;
 use App\Models\PasienAntrean;
+use App\Models\PasienOdontogram;
 use App\Models\PasienRecord;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,12 +25,16 @@ class PasienRecordController extends Controller
         if ($request->mulai) $mulai = $request->mulai;
         if ($request->selesai) $selesai = $request->selesai;
         $antrean=PasienAntrean::whereKehadiran('P')->whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->first();
-
+        $listRecord=PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at','=',$mulai)->get();
         $listCheckup=DaftarCheckup::all()->keyBy('id');
+        $listOdo=DaftarOdontogram::get(['id AS value','kode','arti AS text']);
+        $pasienOdo=PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
         return Inertia::render('List/ListPemeriksaan', [
             'antrean' => $antrean,
             'listCheckup'=>$listCheckup,
-            'listRecord'=>PasienRecord::wherePasien($antrean->pasien)->whereDate('created_at','=',$mulai)->get(),
+            'listRecord'=>$listRecord,
+            'listOdo'=>$listOdo,
+            'pasienOdo'=>$pasienOdo,
             'message' => session()->has('message') ? session()->get("message") : null
         ]);
     }

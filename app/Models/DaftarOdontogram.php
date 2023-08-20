@@ -34,7 +34,7 @@ class DaftarOdontogram extends Eloquent
     /**
      * @var array
      */
-    protected $fillable = ['created_by', 'link_gambar', 'kode', 'arti', 'catatan', 'created_at', 'updated_at'];
+    protected $fillable = ['created_by', 'kode', 'arti', 'catatan', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

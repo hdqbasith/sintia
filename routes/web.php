@@ -7,6 +7,7 @@ use App\Http\Controllers\DaftarPasienController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Migrasi;
 use App\Http\Controllers\PasienAntreanController;
+use App\Http\Controllers\PasienOdontogramController;
 use App\Http\Controllers\PasienRecordController;
 use App\Http\Controllers\Student\BioStudent;
 use App\Http\Controllers\User\Setting;
@@ -98,6 +99,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pemeriksaan/list', 'index')->name('pemeriksaan.list');
         Route::post('/pemeriksaan/store', 'store')->name('pemeriksaan.store');
         Route::post('/pemeriksaan/delete', 'delete')->name('pemeriksaan.delete');
+    });
+    Route::controller(PasienOdontogramController::class)->group(function () {
+        Route::post('/odontogram', 'index')->name('odontogram.list');
+        Route::post('/odontogram', 'store')->name('odontogram.store');
     });
 });
 

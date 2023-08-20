@@ -28,9 +28,9 @@ const filterPasien = (search) => {
 };
 const filterBpjs = (bool) => {
   filteredpasiens.value = toArray(pasiens).filter((col) => {
-    if (col.bpjs != null && bool == 'bpjs') return true;
-    else if (col.bpjs == null && bool == 'non') return true;
-    // else return false;
+    if ((col.bpjs != '' && col.bpjs !=null) && bool == 'bpjs') return true;
+    else if ((col.bpjs == '' || col.bpjs ==null) && bool == 'non') return true;
+    else return false;
   }
   )
 };

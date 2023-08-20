@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('daftar_odontograms', function (Blueprint $table) {
             $table->id();
-            $table->string('link_gambar')->nullable();
             $table->char('kode')->nullable();
             $table->string('arti')->nullable();
             $table->string('catatan')->nullable();

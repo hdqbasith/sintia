@@ -16,14 +16,28 @@ return new class extends Migration
         Schema::create('pasien_records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pasien');
-            $table->string('tabel')->default('anamnesa');
-            $table->bigInteger('kode')->nullable();
-            $table->string('keterangan')->nullable();
+            $table->string('subjective')->nullable();
+            $table->string('objective')->nullable();
+            $table->unsignedBigInteger('assessment')->nullable();
+            $table->unsignedBigInteger('planning')->nullable();
+            $table->string('detail')->nullable();
+            $table->string('prescription')->nullable();
+            $table->unsignedBigInteger('cost')->nullable();
             $table->integer('klinik')->default(1);
             $table->uuid('admin')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
 
+            $table->foreign('assessment')
+                ->nullable()
+                ->references('id')
+                ->on('daftar_diagnoses')
+                ->onDelete('cascade');
+            $table->foreign('planning')
+                ->nullable()
+                ->references('id')
+                ->on('daftar_terapis')
+                ->onDelete('cascade');
             $table->foreign('pasien')
                 ->nullable()
                 ->references('id')

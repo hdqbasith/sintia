@@ -17765,7 +17765,19 @@
      
 }
 
-        namespace Laravel\Socialite\Facades { 
+        namespace Flavorly\VanillaComponents\Facades { 
+            /**
+     * 
+     *
+     * @see \Flavorly\VanillaComponents\VanillaComponents
+     */ 
+        class VanillaComponents {
+         
+    }
+     
+}
+
+    namespace Laravel\Socialite\Facades { 
             /**
      * 
      *
@@ -23290,6 +23302,7 @@ namespace  {
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
             class Vite extends \Illuminate\Support\Facades\Vite {}
+            class VanillaComponents extends \Flavorly\VanillaComponents\Facades\VanillaComponents {}
             class Socialite extends \Laravel\Socialite\Facades\Socialite {}
             class Excel extends \Maatwebsite\Excel\Facades\Excel {}
             class Flare extends \Spatie\LaravelIgnition\Facades\Flare {}
