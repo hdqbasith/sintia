@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @mixin \Eloquent
  * @property array|null $middle
  * @method static \Illuminate\Database\Eloquent\Builder|PasienOdontogram whereMiddle($value)
+ * @property-read \App\Models\DaftarOdontogram|null $daftarOdontogram
  * @mixin Eloquent
  */
 class PasienOdontogram extends Eloquent

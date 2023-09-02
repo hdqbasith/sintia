@@ -97,7 +97,9 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::controller(PasienRecordController::class)->group(function () {
         Route::get('/pemeriksaan/list', 'index')->name('pemeriksaan.list');
-        Route::post('/pemeriksaan/store', 'store')->name('pemeriksaan.store');
+        Route::get('/pemeriksaan/cetak', 'printPemeriksaan')->name('pemeriksaan.cetak');
+        Route::post('/pemeriksaan/store_checkup', 'storeCheckup')->name('pemeriksaan.store_checkup');
+        Route::post('/pemeriksaan/store_record', 'storeRecord')->name('pemeriksaan.store_record');
         Route::post('/pemeriksaan/delete', 'delete')->name('pemeriksaan.delete');
     });
     Route::controller(PasienOdontogramController::class)->group(function () {

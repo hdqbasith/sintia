@@ -1,5 +1,7 @@
 <script setup>
+import { usePage } from "@inertiajs/vue3";
 import { reactive, ref } from "vue";
+
 const props = defineProps({
     h: {
         type: Number,
@@ -41,7 +43,7 @@ const props = defineProps({
                 id:'',
                 key:''
             },
-            current: '',
+            position: '',
         })
     },
     tipe: {
@@ -70,6 +72,7 @@ const clickedSide = ref({ position: '', value: '' });
 </script>
 <template>
     <svg class="tooth inline" viewBox="0 0 20 40" :height="h + 'px'" :width="w + 'px'">
+        {{ highlight }}
         <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="1" height="2">
             <rect fill="white" height="2" width="1" />
             <path d="M 1,-1 l 0,3" stroke="#000000" stroke-width="1" />
@@ -80,7 +83,7 @@ const clickedSide = ref({ position: '', value: '' });
                 :stroke-width="tooth[i].width"
                 @click="{ clickedSide.value = p; clickedSide.position = i; emit('changePosition', i) }" />
         </g>
-        <polygon :points="highlight && tooth.current == clickedSide.position ? clickedSide.value : ''" stroke="yellow"
+        <polygon :points="highlight && tooth.position == clickedSide.position ? clickedSide.value : ''" stroke="yellow"
             transform="translate(0,10)" fill="none" />
         <slot />
     </svg>

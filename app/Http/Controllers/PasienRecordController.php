@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\DaftarCheckup;
+use App\Models\DaftarDiagnosis;
 use App\Models\DaftarOdontogram;
+use App\Models\DaftarTerapi;
 use App\Models\PasienAntrean;
+use App\Models\PasienCheckup;
 use App\Models\PasienOdontogram;
 use App\Models\PasienRecord;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,17 +28,27 @@ class PasienRecordController extends Controller
         $mulai = $selesai = Carbon::now()->format('Y-m-d');
         if ($request->mulai) $mulai = $request->mulai;
         if ($request->selesai) $selesai = $request->selesai;
-        $antrean=PasienAntrean::whereKehadiran('P')->whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->first();
-        $listRecord=PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at','=',$mulai)->get();
-        $listCheckup=DaftarCheckup::all()->keyBy('id');
-        $listOdo=DaftarOdontogram::get(['id AS value','kode','arti AS text']);
-        $pasienOdo=PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
+        $antrean = PasienAntrean::whereKehadiran('P')->whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->first();
+        $listCheckup = DaftarCheckup::all()->keyBy('id');
+        $listOdo = DaftarOdontogram::get(['id AS value', 'kode', 'arti AS text'])->keyBy('value');
+        $listDiagnoses = DaftarDiagnosis::orderBy('diagnosis')->get(['id AS value', 'diagnosis AS text']);
+        $listTerapi = DaftarTerapi::orderBy('terapi')->get(['id AS value', 'terapi AS text']);
+        $pasienOdo = PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
+        $pasienCheckup = PasienCheckup::wherePasien($antrean?->pasien)
+            ->whereDate('pasien_checkups.created_at', '>=', $mulai)
+            ->join('daftar_checkups', 'pasien_checkups.kode', '=','daftar_checkups.id')
+            ->get(['pasien_checkups.kode','keterangan','daftar_checkups.kode AS group'])
+            ->keyBy('kode');
+        $pasienRecord = PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarDiagnoses')->with('daftarTerapis')->first();
         return Inertia::render('List/ListPemeriksaan', [
             'antrean' => $antrean,
-            'listCheckup'=>$listCheckup,
-            'listRecord'=>$listRecord,
-            'listOdo'=>$listOdo,
-            'pasienOdo'=>$pasienOdo,
+            'listCheckup' => $listCheckup,
+            'listDiadnosa' => $listDiagnoses,
+            'listTerapi' => $listTerapi,
+            'pasienCheckup' => $pasienCheckup,
+            'pasienRecord' => $pasienRecord,
+            'listOdo' => $listOdo,
+            'pasienOdo' => $pasienOdo,
             'message' => session()->has('message') ? session()->get("message") : null
         ]);
     }
@@ -55,17 +69,24 @@ class PasienRecordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeCheckup(Request $request)
     {
-        $data=$request->all();
-        $pasien=$data['pasien'];
-        unset($data['pasien']);
-        $data=json_decode($data['data']);
-        $insert=[];
-        foreach ($data as $d) {
-            $insert[$d->key]=['pasien'=>$pasien,'tabel'=>'daftar_checkups','kode'=>$d->key,'keterangan'=>$d->val];
+        $mulai = Carbon::now()->format('Y-m-d');
+        $data = $request->all();
+        foreach ($data as $k => $v) {
+            if ($k != 'pasien') {
+                $isi = ['kode' => $k, 'keterangan' => $v, 'pasien'=>$data['pasien']];
+                $exist = PasienCheckup::whereKode($k)->wherePasien($data['pasien'])->whereDate('created_at', '=', $mulai)->first();
+                PasienCheckup::updateOrInsert(['id' => $exist?->id], $isi);
+            }
         }
-        PasienRecord::insert($insert);
+    }
+    public function storeRecord(Request $request)
+    {
+        $mulai = Carbon::now()->format('Y-m-d');
+        $data = $request->all();
+        $exist = PasienRecord::wherePasien($data['pasien'])->whereDate('created_at', '=', $mulai)->first();
+        PasienRecord::updateOrInsert(['id' => $exist?->id], $data);
     }
 
     /**
@@ -110,8 +131,43 @@ class PasienRecordController extends Controller
      */
     public function delete(Request $request)
     {
-        $id=$request->all();
+        $id = $request->all();
         PasienRecord::whereId($id)->delete();
         return redirect()->back();
+    }
+    /**
+     * Print Hasil Pemeriksaan.
+     *
+     * @param  \App\Models\PasienRecord  $pasienRecord
+     * @return \Illuminate\Http\Response
+     */
+    public function printPemeriksaan(Request $request): Response
+    {
+        $mulai = $selesai = Carbon::now()->format('Y-m-d');
+        if ($request->mulai) $mulai = $request->mulai;
+        if ($request->selesai) $selesai = $request->selesai;
+        $antrean = PasienAntrean::whereKehadiran('P')->whereDate('booking_mulai', '>=', $mulai)->whereDate('booking_mulai', '<=', $selesai)->with('daftarPasien')->first();
+        $listCheckup = DaftarCheckup::all()->keyBy('id');
+        $listOdo = DaftarOdontogram::get(['id AS value', 'kode', 'arti AS text'])->keyBy('value');
+        $listDiagnoses = DaftarDiagnosis::orderBy('diagnosis')->get(['id AS value', 'diagnosis AS text']);
+        $listTerapi = DaftarTerapi::orderBy('terapi')->get(['id AS value', 'terapi AS text']);
+        $pasienOdo = PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
+        $pasienCheckup = PasienCheckup::wherePasien($antrean?->pasien)
+            ->whereDate('pasien_checkups.created_at', '>=', $mulai)
+            ->join('daftar_checkups', 'pasien_checkups.kode', '=','daftar_checkups.id')
+            ->get(['pasien_checkups.kode','keterangan','daftar_checkups.kode AS group'])
+            ->keyBy('kode');
+        $pasienRecord = PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarDiagnoses')->with('daftarTerapis')->first();
+        return Inertia::render('Print/Pemeriksaan', [
+            'antrean' => $antrean,
+            'listCheckup' => $listCheckup,
+            'listDiadnosa' => $listDiagnoses,
+            'listTerapi' => $listTerapi,
+            'pasienCheckup' => $pasienCheckup,
+            'pasienRecord' => $pasienRecord,
+            'listOdo' => $listOdo,
+            'pasienOdo' => $pasienOdo,
+            'message' => session()->has('message') ? session()->get("message") : null
+        ]);
     }
 }

@@ -45,4 +45,31 @@
     content: attr(data-label);
     @apply font-semibold pr-3 text-left lg:hidden;
   }
+
+  thead {
+    @apply print:table-header-group;
+  }
+  
+  tr {
+    @apply 
+      print:table-row print:border-b-2;
+  }
+  
+  td:not(:first-child) {
+    @apply print:border-l print:border-t-2 print:border-r-2 print:border-b-2 print:border-black;
+  }
+  
+  th {
+    @apply print:text-left print:p-3;
+  }
+  
+  td {
+    @apply print:py-0 print:px-0 print:table-cell print:text-left print:p-3 print:align-middle print:border-2 print:border-black;
+  }
+  
+  
+  td:before {
+    content: attr(data-label);
+    @apply  print:hidden;
+  }
 }
