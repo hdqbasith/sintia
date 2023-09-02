@@ -36,9 +36,13 @@ class PasienRecordController extends Controller
         $pasienOdo = PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
         $pasienCheckup = PasienCheckup::wherePasien($antrean?->pasien)
             ->whereDate('pasien_checkups.created_at', '>=', $mulai)
-            ->join('daftar_checkups', 'pasien_checkups.kode', '=','daftar_checkups.id')
-            ->get(['pasien_checkups.kode','keterangan','daftar_checkups.kode AS group'])
+            ->join('daftar_checkups', 'pasien_checkups.kode', '=', 'daftar_checkups.id')
+            ->get(['pasien_checkups.kode', 'keterangan', 'daftar_checkups.kode AS group'])
             ->keyBy('kode');
+        $pasienCheckupExtra = json_decode(PasienCheckup::wherePasien($antrean?->pasien)
+            ->whereDate('created_at', '>=', $mulai)
+            ->whereKode('extra')
+            ->first('keterangan'));
         $pasienRecord = PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarDiagnoses')->with('daftarTerapis')->first();
         return Inertia::render('List/ListPemeriksaan', [
             'antrean' => $antrean,
@@ -46,6 +50,7 @@ class PasienRecordController extends Controller
             'listDiadnosa' => $listDiagnoses,
             'listTerapi' => $listTerapi,
             'pasienCheckup' => $pasienCheckup,
+            'pasienCheckupExtra' => $pasienCheckupExtra,
             'pasienRecord' => $pasienRecord,
             'listOdo' => $listOdo,
             'pasienOdo' => $pasienOdo,
@@ -75,11 +80,20 @@ class PasienRecordController extends Controller
         $data = $request->all();
         foreach ($data as $k => $v) {
             if ($k != 'pasien') {
-                $isi = ['kode' => $k, 'keterangan' => $v, 'pasien'=>$data['pasien']];
+                $isi = ['kode' => $k, 'keterangan' => $v, 'pasien' => $data['pasien']];
                 $exist = PasienCheckup::whereKode($k)->wherePasien($data['pasien'])->whereDate('created_at', '=', $mulai)->first();
                 PasienCheckup::updateOrInsert(['id' => $exist?->id], $isi);
             }
         }
+    }
+    public function storeCheckupExtra(Request $request)
+    {
+        $mulai = Carbon::now()->format('Y-m-d');
+        $data = $request->all();
+        $data['keterangan'] = json_encode($data['isi']);
+        unset($data['isi']);
+        $exist = PasienCheckup::whereKode('extra')->wherePasien($data['pasien'])->whereDate('created_at', '=', $mulai)->first();
+        PasienCheckup::updateOrInsert(['id' => $exist?->id], $data);
     }
     public function storeRecord(Request $request)
     {
@@ -154,9 +168,13 @@ class PasienRecordController extends Controller
         $pasienOdo = PasienOdontogram::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarOdontogram')->get()->keyBy('number');
         $pasienCheckup = PasienCheckup::wherePasien($antrean?->pasien)
             ->whereDate('pasien_checkups.created_at', '>=', $mulai)
-            ->join('daftar_checkups', 'pasien_checkups.kode', '=','daftar_checkups.id')
-            ->get(['pasien_checkups.kode','keterangan','daftar_checkups.kode AS group'])
+            ->join('daftar_checkups', 'pasien_checkups.kode', '=', 'daftar_checkups.id')
+            ->get(['pasien_checkups.kode', 'keterangan', 'daftar_checkups.kode AS group'])
             ->keyBy('kode');
+        $pasienCheckupExtra = json_decode(PasienCheckup::wherePasien($antrean?->pasien)
+            ->whereDate('created_at', '>=', $mulai)
+            ->whereKode('extra')
+            ->first('keterangan'));
         $pasienRecord = PasienRecord::wherePasien($antrean?->pasien)->whereDate('created_at', '>=', $mulai)->with('daftarDiagnoses')->with('daftarTerapis')->first();
         return Inertia::render('Print/Pemeriksaan', [
             'antrean' => $antrean,
@@ -164,6 +182,7 @@ class PasienRecordController extends Controller
             'listDiadnosa' => $listDiagnoses,
             'listTerapi' => $listTerapi,
             'pasienCheckup' => $pasienCheckup,
+            'pasienCheckupExtra'=>$pasienCheckupExtra,
             'pasienRecord' => $pasienRecord,
             'listOdo' => $listOdo,
             'pasienOdo' => $pasienOdo,

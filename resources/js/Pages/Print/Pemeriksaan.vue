@@ -107,7 +107,7 @@ const optionExtra = {
     options: ['-','Tidak Ada', 'Ada']
   },
 };
-const extra = ref({});
+const extra= JSON.parse(props.pasienCheckupExtra.keterangan);
 
 </script>
 
@@ -160,7 +160,7 @@ const extra = ref({});
       </table>
     </div>
     <div id="odontogram">
-      <FormOdontogram :pasien-odo="props.pasienOdo" />
+      <FormOdontogram :pasien-odo="props.pasienOdo" :pasienCheckupExtra="props.pasienCheckupExtra" />
     </div>
     <div id="tabelBawah">
       <table class="border-2 border-black w-full">
@@ -173,27 +173,6 @@ const extra = ref({});
           </tr>
         </tbody>
       </table>
-    </div>
-    <div id="extra" class="print:hidden grid grid-cols-2 bg-orange-100">
-      <VanillaInputGroup v-for="i in optionExtra" :label="i.key" variant="inline">
-        <VanillaSelect :options="i.options" v-model="extra[i.key]" />
-        <VanillaInput v-model="extra[i.key + 'b']" v-if="extra[i.key] == 'Ada'" />
-      </VanillaInputGroup>
-      <VanillaInputGroup label="Lain-Lain" variant="inline">
-        <VanillaInput v-model="extra['lain']" />
-      </VanillaInputGroup>
-      <div class="grid grid-cols-3">
-        <VanillaInputGroup label="D" variant="inline">
-          <VanillaInput v-model="extra['d']" />
-        </VanillaInputGroup>
-        <VanillaInputGroup label="M" variant="inline">
-          <VanillaInput v-model="extra['m']" />
-        </VanillaInputGroup>
-        <VanillaInputGroup label="F" variant="inline">
-          <VanillaInput v-model="extra['f']" />
-        </VanillaInputGroup>
-      </div>
-
     </div>
     <div id="detail">
       <div v-for="i in optionExtra" class="inline">
@@ -219,7 +198,7 @@ const extra = ref({});
       </div>
       <div>
         Tanda Tangan Pemeriksa<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>
-        (.....................)
+        (......................................)
       </div>
 
     </div>

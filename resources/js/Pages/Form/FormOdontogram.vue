@@ -4,6 +4,7 @@ import CardBoxModalEmpty from '@/components/CardBoxModalEmpty.vue';
 import DiagnosaOdo from '@/components/DiagnosaOdo.vue';
 import Non from '@/components/Svg/Non.vue';
 import Tooth from '@/components/Svg/Tooth.vue';
+import { VanillaInput, VanillaInputGroup, VanillaSelect } from '@flavorly/vanilla-components';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { range } from 'lodash';
 import { reactive, ref, computed, } from "vue";
@@ -11,7 +12,8 @@ import { reactive, ref, computed, } from "vue";
 const listOdo = usePage().props.listOdo;
 const antrean = usePage().props.antrean ?? null;
 const props = defineProps({
-  pasienOdo: Object
+  pasienOdo: Object,
+  pasienCheckupExtra: Object,
 });
 const toothStatic = (a, b, c, d, e, f, g) => {
   return {
@@ -146,6 +148,41 @@ const saveOdo = () => {
   });
 
 }
+
+const optionExtra = {
+  1: {
+    key: 'Occlusi',
+    options: ['-', 'Normal Bite', 'Cross Bite', 'Steep Bite']
+  },
+  2: {
+    key: 'Torus Palatinus',
+    options: ['-', 'Tidak Ada', 'Kecil', 'Sedang', 'Besar', 'Multiple']
+  },
+  3: {
+    key: 'Torus Mandibularis',
+    options: ['-', 'Tidak ada', 'sisi kiri', 'sisi kanan', 'kedua sisi']
+  },
+  4: {
+    key: 'Palatum',
+    options: ['-', 'Dalam', 'Sedang', 'Rendah']
+  },
+  5: {
+    key: 'Diastema',
+    options: ['-', 'Tidak Ada', 'Ada']
+  },
+  6: {
+    key: 'Gigi Anomali',
+    options: ['-', 'Tidak Ada', 'Ada']
+  },
+}; 
+const jsonExtra= JSON.parse(props.pasienCheckupExtra.keterangan);
+const extra = useForm({ isi: jsonExtra?? {} });
+const saveExtra = () => {
+  extra.transform((data) => ({ ...data, kode: 'extra', pasien:antrean.pasien }))
+    .post(route('pemeriksaan.store_checkup_extra'), {
+
+    });
+}
 </script>
 
 <template>
@@ -186,6 +223,30 @@ const saveOdo = () => {
         <span class="block">{{ petak[i].k }}</span>
       </div>
     </div>
+
+    <div id="extra" class="print:hidden grid grid-cols-2 bg-orange-100" v-show="route().current()!='pemeriksaan.cetak'">
+      <VanillaInputGroup v-for="i in optionExtra" :label="i.key" variant="inline">
+        <VanillaSelect :options="i.options" v-model="extra.isi[i.key]" />
+        <VanillaInput v-model="extra.isi[i.key + 'b']" v-if="extra.isi[i.key] == 'Ada'" />
+      </VanillaInputGroup>
+      <VanillaInputGroup label="Lain-Lain" variant="inline">
+        <VanillaInput v-model="extra.isi['lain']" />
+      </VanillaInputGroup>
+      <div class="grid grid-cols-3">
+        <VanillaInputGroup label="D" variant="inline">
+          <VanillaInput v-model="extra.isi['d']" />
+        </VanillaInputGroup>
+        <VanillaInputGroup label="M" variant="inline">
+          <VanillaInput v-model="extra.isi['m']" />
+        </VanillaInputGroup>
+        <VanillaInputGroup label="F" variant="inline">
+          <VanillaInput v-model="extra.isi['f']" />
+        </VanillaInputGroup>
+      </div>
+      <BaseButton label="Reset" @click="extra.reset()" color="danger" />
+      <BaseButton label="Simpan" @click="saveExtra" color="info" />
+    </div>
+
     <CardBoxModalEmpty v-model="showModalOdo">
       <div class="grid grid-cols-3 bg-white">
         <div class="col-span-1">

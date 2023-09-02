@@ -15,6 +15,7 @@ const props = defineProps({
   pasienCheckup: Object,
   listCheckup: Object,
   pasienOdo: Object,
+  pasienCheckupExtra: Object,
 })
 const antrean = usePage().props.antrean?? null;
 const tabs = reactive({
@@ -50,7 +51,7 @@ const groupInput = reactive([]);
           <BaseButton v-for="(t, i) in tabs" :label="i.toString().replace('tab', '')" :key="i" class="me-1 mb-3"
             :class="tabs[i] ? '' : 'text-xs'" @click="tabAktif(i)" :color="tabs[i] ? 'success' : 'info'" />
         </div>
-        <FormOdontogram v-show="tabs.tabOdontogram" :pasien-odo="props.pasienOdo">
+        <FormOdontogram v-show="tabs.tabOdontogram" :pasien-odo="props.pasienOdo" :pasienCheckupExtra="props.pasienCheckupExtra">
         </FormOdontogram>
         <FormCheckup v-show="tabs.tabPemeriksaan" />
         <FormDiagnosis v-show="tabs.tabDiagnosa" :pasien="antrean?.pasien"/>

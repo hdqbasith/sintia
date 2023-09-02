@@ -99,7 +99,7 @@ const status = { D: 'menunggu', P: 'sudah dipanggil', T: 'ditunda', S: 'selesai'
             dipanggil.daftar_pasien.nama : '' }} (no. {{
     dipanggil ? dipanggil.nomor : '' }})</span>
           <BaseButton :icon="mdiStethoscope" label="Periksa" color="info"
-            @click="router.visit(route('pemeriksaan.list'))" class="me-3" />
+            @click="router.visit(route('pemeriksaan.list'))" class="me-3" v-show="dipanggil" />
           <BaseButton :icon="mdiSkipNext" label="Panggil berikutnya" color="warning"
             @click="router.visit('/antrean/panggil?antrean=next&kehadiran=P')" />
         </div>

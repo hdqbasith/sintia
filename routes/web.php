@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pemeriksaan/list', 'index')->name('pemeriksaan.list');
         Route::get('/pemeriksaan/cetak', 'printPemeriksaan')->name('pemeriksaan.cetak');
         Route::post('/pemeriksaan/store_checkup', 'storeCheckup')->name('pemeriksaan.store_checkup');
+        Route::post('/pemeriksaan/store_checkup_extra', 'storeCheckupExtra')->name('pemeriksaan.store_checkup_extra');
         Route::post('/pemeriksaan/store_record', 'storeRecord')->name('pemeriksaan.store_record');
         Route::post('/pemeriksaan/delete', 'delete')->name('pemeriksaan.delete');
     });
