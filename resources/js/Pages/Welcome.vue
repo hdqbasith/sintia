@@ -18,13 +18,13 @@ const year = new Date().getFullYear();
         gradient">
     <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
       <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+        class="font-semibold text-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
       Dashboard</Link>
 
       <template v-else>
         <button class="transform transition hover:scale-105 duration-300 ease-in-out">
           <Link :href="route('login')"
-            class="dark:text-gray-400 dark:hover:text-white hover:bg-yellow-300 focus:bg-yellow-300 rounded-full py-4 px-8 text-black font-bold">
+            class="dark:text-gray-100 dark:hover:text-white hover:bg-yellow-300 focus:bg-yellow-300 rounded-full py-4 px-8 text-black font-bold">
           Log in
           </Link>
         </button>
@@ -46,7 +46,7 @@ const year = new Date().getFullYear();
         <p class="-mt-2 text-orange-700 text-xs [text-shadow:_2px_2px_7px_rgb(0_0_0_/_30%)]">
           Saatnya kebaikan terstruktur rapi</p>
       </div>
-      <div class="">
+      <div class="text-white">
         <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
           <!--Left Col-->
           <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">

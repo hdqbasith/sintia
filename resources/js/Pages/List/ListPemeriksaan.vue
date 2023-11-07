@@ -48,6 +48,7 @@ const groupInput = reactive([]);
       <CardBox>
         <div class="mb-3">
           <BaseButton class="float-right" label="Cetak" color="info" :icon="mdiPrinter" href="cetak" target="_blank" />
+          <BaseButton class="float-right" label="Surat Keterangan" color="info" :icon="mdiPrinter" href="cetak_suket" target="_blank" />
           <BaseButton v-for="(t, i) in tabs" :label="i.toString().replace('tab', '')" :key="i" class="me-1 mb-3"
             :class="tabs[i] ? '' : 'text-xs'" @click="tabAktif(i)" :color="tabs[i] ? 'success' : 'info'" />
         </div>

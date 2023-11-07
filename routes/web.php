@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(PasienRecordController::class)->group(function () {
         Route::get('/pemeriksaan/list', 'index')->name('pemeriksaan.list');
         Route::get('/pemeriksaan/cetak', 'printPemeriksaan')->name('pemeriksaan.cetak');
+        Route::get('/pemeriksaan/cetak_suket', 'printSuket')->name('pemeriksaan.cetak_suket');
         Route::post('/pemeriksaan/store_checkup', 'storeCheckup')->name('pemeriksaan.store_checkup');
         Route::post('/pemeriksaan/store_checkup_extra', 'storeCheckupExtra')->name('pemeriksaan.store_checkup_extra');
         Route::post('/pemeriksaan/store_record', 'storeRecord')->name('pemeriksaan.store_record');

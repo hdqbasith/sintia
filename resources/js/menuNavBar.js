@@ -10,12 +10,17 @@ import {
   mdiThemeLightDark,
   mdiGithub,
   mdiReact,
+  mdiPrinter,
 } from "@mdi/js";
 
 export default [
   {
+    icon: mdiPrinter,
+    label: "Surat Periksa",
+  },
+  {
     icon: mdiMenu,
-    label: "Sample menu",
+    label: "Riwayat Periksa",
     menu: [
       {
         icon: mdiClockOutline,

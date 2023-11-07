@@ -175,7 +175,7 @@ const optionExtra = {
     options: ['-', 'Tidak Ada', 'Ada']
   },
 }; 
-const jsonExtra= JSON.parse(props.pasienCheckupExtra.keterangan);
+const jsonExtra= JSON.parse(props.pasienCheckupExtra?.keterangan?? null);
 const extra = useForm({ isi: jsonExtra?? {} });
 const saveExtra = () => {
   extra.transform((data) => ({ ...data, kode: 'extra', pasien:antrean.pasien }))
@@ -224,7 +224,7 @@ const saveExtra = () => {
       </div>
     </div>
 
-    <div id="extra" class="print:hidden grid grid-cols-2 bg-orange-100" v-show="route().current()!='pemeriksaan.cetak'">
+    <div id="extra" class="print:hidden grid grid-cols-2 bg-orange-100 bg-opacity-25" v-show="route().current()=='pemeriksaan.list'">
       <VanillaInputGroup v-for="i in optionExtra" :label="i.key" variant="inline">
         <VanillaSelect :options="i.options" v-model="extra.isi[i.key]" />
         <VanillaInput v-model="extra.isi[i.key + 'b']" v-if="extra.isi[i.key] == 'Ada'" />
@@ -260,23 +260,23 @@ const saveExtra = () => {
           <div class="grid grid-flow-col">
             <div class="w-12">
               <button class="bg-red-600 w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].fill = 'red'"></button>
+                @click="tooth[position].fill = 'red'" title="Logam emas"></button>
               <button class="bg-black w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].fill = 'black'"></button>
+                @click="tooth[position].fill = 'black'" title="tambalan amalgam/logam biasa"></button>
               <button class="bg-white w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].fill = 'white'"></button>
+                @click="tooth[position].fill = 'white'" title="Normal"></button>
               <button class="bg-pink-500 w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].fill = 'pink'"></button>
+                @click="tooth[position].fill = 'pink'" title="fissure sealant"></button>
               <button class="bg-green-700 w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].fill = 'green'"></button>
+                @click="tooth[position].fill = 'green'" title="tambalan warna sama dengan warna gigi"></button>
               <svg height="40px" width="40px" viewBox="0 0 8 8" class="inline striped mt-3"
                 @click="tooth[position].fill = 'url(#diagonalHatch)'">
                 <rect height="8" width="8" fill="url(#diagonalHatch)" stroke="black" />
               </svg>
               <button class="w-10 h-10 border-x border-y border-black mt-3"
-                @click="tooth[position].width = .5">tipis</button>
+                @click="tooth[position].width = .5" title="normal">tipis</button>
               <button class="w-10 h-10 border-x border-y border-black mt-3 font-bold"
-                @click="tooth[position].width = 2">tebal</button>
+                @click="tooth[position].width = 2" title="Karies">tebal</button>
             </div>
             <div class="w-96">
               <div class="bg-white text-center pt-4">Gigi nomor : <span class="text-lg font-bold"> {{

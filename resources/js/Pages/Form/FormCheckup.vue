@@ -79,7 +79,7 @@ Object.keys(pasienCheckup).forEach(p => {
 });
 const submit = () => {
   const data = {};
-  Object.assign(data, mi.value, mc.value, eo.value, io.value, { pasien: antrean?.pasien });
+  Object.assign(data, mc.value, mi.value, eo.value, io.value, { pasien: antrean?.pasien });
   const form = useForm(data);
   form.post(route("pemeriksaan.store_checkup"), {
     onSuccess: () => {
@@ -93,6 +93,8 @@ const classInput = 'text-sm appearance-none w-10/12 focus:outline-none shadow di
   <div class="sm:grid sm:grid-cols-3 gap-6">
     <div class="mb-5">
       <div class="text-xl font-bold">Data Medis</div>
+      {{ mc }}
+      {{ mi }}
       <div>
         <FormCheckRadio v-for="m in medisCheck" :label="m.text" class="flex" :name="m.value" :input-value="true"
           v-model="mc[m.value]"/>
